@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eo pipefail
 
 # This script dumps a postgres database and upload it to a S3 bucket
 #
@@ -23,7 +23,11 @@ else
 fi
 
 output="$DB_NAME-$(date +%Y%m%d-%H%M).sql.gz"
-options="${PG_DUMP_OPTIONS:-}"
 
-pg_dump "$options" "$DB_URL" | gzip > "$output"
+args="$DB_URL"
+if [ -n "$PG_DUMP_OPTIONS" ]; then
+    args="$PG_DUMP_OPTIONS $args"
+fi
+
+pg_dump "$args" | gzip > "$output"
 aws s3 cp "$output" "$S3_BUCKET"
