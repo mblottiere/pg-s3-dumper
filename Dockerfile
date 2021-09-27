@@ -1,6 +1,6 @@
-FROM alpine:3.14
+FROM postgres:13
 
-RUN apk add --no-cache bash postgresql-client aws-cli gzip
+RUN apt-get update && apt-get install awscli -y && apt-get clean
 
 COPY ./dump.sh /usr/local/bin/dump
 
