@@ -25,5 +25,5 @@ fi
 output="$DB_NAME-$(date +%Y%m%d-%H%M).sql.gz"
 options="${PG_DUMP_OPTIONS:-}"
 
-pg_dump "$PG_DUMP_OPTIONS" "$DB_URL" | gzip > "$output"
+pg_dump "$options" "$DB_URL" | gzip > "$output"
 aws s3 cp "$output" "$S3_BUCKET"
