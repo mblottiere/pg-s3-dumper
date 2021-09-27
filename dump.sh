@@ -16,11 +16,14 @@ set -euo pipefail
 #
 # All necessary AWS settings should also be passed as environment variables.
 
-output="$DB_NAME-$(date +%Y%m%d-%H%M).sql.gz"
-
 if [ -z "${DB_URL}" ]; then
     DB_URL="postgresql://$DB_USER:$DB_PASS@$DB_HOST/$DB_NAME"
+else
+    DB_NAME=$(echo "$DB_URL" | sed -E 's|^.*\/([^?]*)\??.*$|\1|')
 fi
+
+output="$DB_NAME-$(date +%Y%m%d-%H%M).sql.gz"
+options="${PG_DUMP_OPTIONS:-}"
 
 pg_dump "$PG_DUMP_OPTIONS" "$DB_URL" | gzip > "$output"
 aws s3 cp "$output" "$S3_BUCKET"
