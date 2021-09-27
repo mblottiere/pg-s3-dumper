@@ -6,6 +6,7 @@ set -euo pipefail
 #
 # All inputs are from environment variables:
 # S3_BUCKET: bucket in which to upload the dump
+# PG_DUMP_OPTIONS: additional options to pass to pg_dump invocation, eg: "--clean --no-owner"
 # DB_URL: postgres URL (postgres://user:pass@host/dbname)
 # - OR -
 # DB_NAME: database name
@@ -21,5 +22,5 @@ if [ -z "${DB_URL}" ]; then
     DB_URL="postgresql://$DB_USER:$DB_PASS@$DB_HOST/$DB_NAME"
 fi
 
-pg_dump "$DB_URL" | gzip > "$output"
+pg_dump "$PG_DUMP_OPTIONS" "$DB_URL" | gzip > "$output"
 aws s3 cp "$output" "$S3_BUCKET"
