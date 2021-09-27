@@ -4,14 +4,22 @@ Once instanciated, this container will dump the target database and export it gz
 
 Expected environment variables:
 
+S3 target:
+
+- S3_BUCKET: bucket in which to upload the dump
+
+Database details:
+
+- DB_URL: in the form postgresql://user:pass@host/dbname
+
+OR:
+
 - DB_NAME: database name
 - DB_USER: username used to connect to postgres
 - DB_PASS: password used for authentication
 - DB_HOST: hostname of the postgres instance
-- S3_BUCKET: bucket in which to upload the dump
 
 And any other env var aws-cli might expect.
-
 
 Example use case as a k8s cron job:
 
