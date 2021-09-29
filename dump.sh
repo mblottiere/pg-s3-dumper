@@ -24,10 +24,14 @@ fi
 
 output="$DB_NAME-$(date +%Y%m%d-%H%M).sql.gz"
 
-args="$DB_URL"
+cmd=(pg_dump)
+
 if [ -n "$PG_DUMP_OPTIONS" ]; then
-    args="$PG_DUMP_OPTIONS $args"
+    IFS=' ' read -r -a options <<< "$PG_DUMP_OPTIONS"
+    cmd+=("${options[@]}")
 fi
 
-pg_dump "$args" | gzip > "$output"
+cmd+=("$DB_URL")
+
+"${cmd[@]}" | gzip > "$output"
 aws s3 cp "$output" "$S3_BUCKET"
